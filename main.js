@@ -30,10 +30,19 @@ function retrieveArticleDate(url) {
 			var resp = JSON.parse(xhr.responseText);
 			resp['archived_snapshots']['closest']['timestamp'];
 			date = moment(resp['archived_snapshots']['closest']['timestamp'], "YYYYMMDD").format('L');
-			relative_date = moment(resp['archived_snapshots']['closest']['timestamp'], "YYYYMMDD").fromNow();
+			relative_date = moment(resp['archived_snapshots']['closest']['timestamp'], "YYYYMMDD");
 			out = url + " Date: " + date + " Relative Date: " + relative_date;
 			//console.log(out);
-			$('a[href="' + url + '"]').prev().find('.ellipsis').fadeIn().append('<span style="float: right; color: #04B431;">' + relative_date + '</span>').hide().fadeIn()
+			
+			var color = '#509051'; // color for articles newer than a month
+			if (relative_date.diff(moment(), 'month') <= -1) {
+				color = '#83c181'; // older than a month
+			}
+			if (relative_date.diff(moment(), 'year') <= -1) {
+				color = '#bfe5bc'; // older than a year
+			} 
+			
+			$('a[href="' + url + '"]').prev().find('.ellipsis').fadeIn().append('<span style="float: right; color: ' + color + '">' + relative_date.fromNow() + '</span>').hide().fadeIn()
 		}
 	  }
 	}
